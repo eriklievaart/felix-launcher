@@ -1,0 +1,7 @@
+
+[compile]
+org.apache.felix.framework org.apache.felix 5.6.10
+
+[test]
+junit junit 4.7
+
