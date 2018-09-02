@@ -7,7 +7,7 @@ public class JvmPathsU {
 
 	@Test
 	public void getParentPath() throws Exception {
-		String parent = JvmPaths.getParentPath("/erikl/Applications/q3/launcher.jar");
-		Assert.assertEquals("/erikl/Applications/q3", parent);
+		String parent = JvmPaths.getParentPath("/Applications/q3/launcher.jar");
+		Assert.assertEquals("/Applications/q3", parent);
 	}
 }
