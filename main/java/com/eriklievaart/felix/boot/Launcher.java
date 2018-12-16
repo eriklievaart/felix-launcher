@@ -2,8 +2,11 @@ package com.eriklievaart.felix.boot;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
+import java.util.Properties;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -14,10 +17,12 @@ public class Launcher {
 
 	private File root;
 	private File bundleDir;
+	private File configFile;
 
 	public Launcher(File root) {
 		this.root = root;
 		this.bundleDir = new File(root, "bundle");
+		this.configFile = new File(root, "osgi.properties");
 	}
 
 	public void start() throws Exception {
@@ -44,14 +49,43 @@ public class Launcher {
 		System.out.println("========================");
 		System.out.println("root dir: " + root.getAbsolutePath());
 		System.out.println("bundle dir: " + bundleDir.getAbsolutePath());
+		System.out.println("property file: " + configFile.getAbsolutePath());
 	}
 
 	private Hashtable<String, String> createProperties() {
+		Hashtable<String, String> properties = defaultProperties();
+		loadConfigFile().forEach((k, v) -> properties.put(k.toString().trim(), v.toString().trim()));
+		printProperties(properties);
+		return properties;
+	}
+
+	private void printProperties(Hashtable<String, String> properties) {
+		System.out.println();
+		System.out.println("== felix properties ==");
+		properties.forEach((k, v) -> System.out.println(k + " = " + v));
+		System.out.println();
+	}
+
+	private Properties loadConfigFile() {
+		try {
+			Properties local = new Properties();
+			if (configFile.isFile()) {
+				local.load(new FileReader(configFile));
+			}
+			return local;
+
+		} catch (IOException e) {
+			return new Properties();
+		}
+	}
+
+	private Hashtable<String, String> defaultProperties() {
 		Hashtable<String, String> properties = new Hashtable<>();
 		properties.put("org.osgi.framework.storage.clean", "onFirstInit");
 		properties.put("org.osgi.service.http.port", "8000");
-		properties.put("felix.log.level", "2");
+		properties.put("felix.log.level", "3");
 		properties.put("felix.cache.rootdir", root.getAbsolutePath());
+		properties.put("org.apache.felix.http.debug", "true");
 		return properties;
 	}
 

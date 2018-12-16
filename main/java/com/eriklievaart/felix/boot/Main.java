@@ -10,8 +10,10 @@ public class Main {
 
 	private static File getRootDir(String[] args) {
 		if (args.length == 0) {
+			// run application packed with felix jar
 			return new File(JvmPaths.getJarDirOrRunDir(Main.class));
 		}
+		// run application at [user.home]/Applications/[arg0]
 		File home = new File(System.getProperty("user.home"));
 		File applications = new File(home, "Applications");
 		return new File(applications, getProjectName(args));
