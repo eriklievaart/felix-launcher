@@ -23,6 +23,9 @@ public class Launcher {
 		this.root = root;
 		this.bundleDir = new File(root, "bundle");
 		this.configFile = new File(root, "osgi.properties");
+		if (!bundleDir.isDirectory()) {
+			throw new Error("directory does not exist " + bundleDir);
+		}
 	}
 
 	public void start() throws Exception {
