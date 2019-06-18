@@ -65,7 +65,13 @@ public class Launcher {
 	private void printProperties(Hashtable<String, String> properties) {
 		System.out.println();
 		System.out.println("== felix properties ==");
-		properties.forEach((k, v) -> System.out.println(k + " = " + v));
+		properties.forEach((k, v) -> {
+			if (k.toLowerCase().contains("password")) {
+				System.out.println(k + " = ????????");
+			} else {
+				System.out.println(k + " = " + v);
+			}
+		});
 		System.out.println();
 	}
 
