@@ -14,6 +14,7 @@ import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 
 public class Launcher {
+	private static final String HOME = System.getProperty("user.home");
 
 	private File root;
 	private File bundleDir;
@@ -57,9 +58,15 @@ public class Launcher {
 
 	private Hashtable<String, String> createProperties() {
 		Hashtable<String, String> properties = defaultProperties();
-		loadConfigFile().forEach((k, v) -> properties.put(k.toString().trim(), v.toString().trim()));
+		loadConfigFile().forEach((k, v) -> {
+			properties.put(k.toString().trim(), resolveSystemProperties(v.toString().trim()));
+		});
 		printProperties(properties);
 		return properties;
+	}
+
+	private static String resolveSystemProperties(String value) {
+		return value.replace("${user.home}", HOME);
 	}
 
 	private void printProperties(Hashtable<String, String> properties) {
