@@ -113,6 +113,9 @@ public class Launcher {
 				System.out.println("installing bundle: " + file);
 				Bundle bundle = context.installBundle("file:" + file.getCanonicalPath());
 				bundle.start();
+				if (bundle.getSymbolicName() == null) {
+					throw new RuntimeException("bundle must be assigned a name: " + file);
+				}
 			}
 		}
 	}

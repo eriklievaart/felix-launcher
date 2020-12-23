@@ -13,17 +13,15 @@ public class Main {
 			// run application packed with felix jar
 			return new File(JvmPaths.getJarDirOrRunDir(Main.class));
 		}
-		// run application at [user.home]/Applications/[arg0]
-		File home = new File(System.getProperty("user.home"));
-		File applications = new File(home, "Applications");
-		return new File(applications, getProjectName(args));
-	}
+		if (args[0].contains("/")) {
+			// absolute path for root
+			return new File(args[0]);
 
-	private static String getProjectName(String[] args) {
-		String name = "q";
-		if (args.length > 0) {
-			name = args[0];
+		} else {
+			// run application at [user.home]/Applications/[arg0]
+			File home = new File(System.getProperty("user.home"));
+			File applications = new File(home, "Applications");
+			return new File(applications, args[0]);
 		}
-		return name;
 	}
 }
