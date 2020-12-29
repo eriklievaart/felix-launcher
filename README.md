@@ -3,7 +3,7 @@ This repository contains the code for a simple launcher jar that can bootstrap a
 
 Run the launcher like so:
 
-`java -classpath felix.jar:org.apache.felix.framework-5.6.10.jar com.eriklievaart.felix.boot.Main [root]`
+`java -classpath felix.jar:felix.framework-5.6.10.jar com.eriklievaart.felix.boot.Main [root]`
 
 This will start apache felix (presuming all required files are present).
 
