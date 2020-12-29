@@ -7,7 +7,7 @@ Run the launcher like so:
 
 This will start apache felix (presuming all required files are present).
 
-The launcher install all of the bundles located in: `[root]/bundle`
+The launcher install all of the bundles located in: `[root]/bundle/`
 
 OSGI properties can be configured in the optional file: `[root]/osgi.properties`
 
