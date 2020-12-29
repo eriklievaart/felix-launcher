@@ -106,8 +106,11 @@ public class Launcher {
 	}
 
 	private void installBundles(Framework framework) throws Exception {
-		System.out.println("installing bundles");
 		BundleContext context = framework.getBundleContext();
+		if (bundleDir.listFiles().length == 0) {
+			System.out.println("no bundles found in " + bundleDir);
+			System.exit(50);
+		}
 		for (File file : bundleDir.listFiles()) {
 			if (file.getName().endsWith(".jar")) {
 				System.out.println("installing bundle: " + file);
