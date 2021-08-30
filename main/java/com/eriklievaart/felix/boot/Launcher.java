@@ -112,7 +112,7 @@ public class Launcher {
 			System.exit(50);
 		}
 		for (File file : bundleDir.listFiles()) {
-			if (file.getName().endsWith(".jar")) {
+			if (file.getName().endsWith(".jar") && !file.getName().endsWith("-src.jar")) {
 				System.out.println("installing bundle: " + file);
 				Bundle bundle = context.installBundle("file:" + file.getCanonicalPath());
 				bundle.start();

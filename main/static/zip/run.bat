@@ -1,2 +1,2 @@
 
-start javaw -cp felix.jar;lib/* com.eriklievaart.felix.boot.Main %1
+start javaw -cp felix-launcher.jar;lib/* com.eriklievaart.felix.boot.Main %1
