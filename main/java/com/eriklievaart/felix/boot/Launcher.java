@@ -65,8 +65,8 @@ public class Launcher {
 		return properties;
 	}
 
-	private static String resolveSystemProperties(String value) {
-		return value.replace("${user.home}", HOME);
+	private String resolveSystemProperties(String value) {
+		return value.replace("${project}", root.getName()).replace("${user.home}", HOME);
 	}
 
 	private void printProperties(Hashtable<String, String> properties) {
