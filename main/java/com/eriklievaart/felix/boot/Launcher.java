@@ -5,8 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -72,7 +76,7 @@ public class Launcher {
 	private void printProperties(Hashtable<String, String> properties) {
 		System.out.println();
 		System.out.println("== felix properties ==");
-		properties.forEach((k, v) -> {
+		new TreeMap<>(properties).forEach((k, v) -> {
 			if (k.toLowerCase().contains("password")) {
 				System.out.println(k + " = ????????");
 			} else {
@@ -111,16 +115,41 @@ public class Launcher {
 			System.out.println("no bundles found in " + bundleDir);
 			System.exit(50);
 		}
-		for (File file : bundleDir.listFiles()) {
-			if (file.getName().endsWith(".jar") && !file.getName().endsWith("-src.jar")) {
-				System.out.println("installing bundle: " + file);
-				Bundle bundle = context.installBundle("file:" + file.getCanonicalPath());
-				bundle.start();
-				if (bundle.getSymbolicName() == null) {
-					throw new RuntimeException("bundle must be assigned a name: " + file);
-				}
+		for (File file : getBundles()) {
+			System.out.println("installing bundle: " + file);
+			Bundle bundle = context.installBundle("file:" + file.getCanonicalPath());
+			bundle.start();
+			if (bundle.getSymbolicName() == null) {
+				throw new RuntimeException("bundle must be assigned a name: " + file);
 			}
 		}
+	}
+
+	private List<File> getBundles() {
+		List<File> files = new ArrayList<>();
+		for (File file : bundleDir.listFiles()) {
+			if (file.getName().endsWith(".jar") && !file.getName().endsWith("-src.jar")) {
+				files.add(file);
+			}
+		}
+		sortVersionedBundlesFirst(files);
+		return files;
+	}
+
+	static void sortVersionedBundlesFirst(List<File> files) {
+		Collections.sort(files, (a, b) -> {
+			if (hasVersionNumber(a.getName()) && !hasVersionNumber(b.getName())) {
+				return -1000;
+			}
+			if (hasVersionNumber(b.getName()) && !hasVersionNumber(a.getName())) {
+				return 1000;
+			}
+			return a.getName().compareTo(b.getName());
+		});
+	}
+
+	static boolean hasVersionNumber(String name) {
+		return name.matches(".*-[0-9.]++jar");
 	}
 
 	private FrameworkFactory getFrameworkFactory() throws Exception {
