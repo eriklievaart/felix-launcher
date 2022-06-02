@@ -27,9 +27,18 @@ public class Launcher {
 	public Launcher(File root) {
 		this.root = root;
 		this.bundleDir = new File(root, "bundle");
-		this.configFile = new File(root, "osgi.properties");
+		this.configFile = findConfigFile();
 		if (!bundleDir.isDirectory()) {
 			throw new Error("directory does not exist " + bundleDir);
+		}
+	}
+
+	private File findConfigFile() {
+		File file = new File(root, "osgi.properties");
+		if (file.exists()) {
+			return file;
+		} else {
+			return new File(root, "dev-osgi.properties");
 		}
 	}
 
@@ -52,6 +61,7 @@ public class Launcher {
 	}
 
 	private void printHeader() {
+		System.out.println();
 		System.out.println("========================");
 		System.out.println("== initializing felix ==");
 		System.out.println("========================");
