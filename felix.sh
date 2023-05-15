@@ -17,6 +17,7 @@ hot() {
 	while true
 	do
 		ls -l ~/Applications/$project/bundle > data/$project-running.txt
+		echo "redeploying"
 		java -client -classpath .:@project@.jar:lib/* @jvm.opts@ @main.class@ "$@" &
 		pid=$!
 
@@ -25,7 +26,7 @@ hot() {
 			sleep 0.1
 			ls -l ~/Applications/$project/bundle > data/$project-current.txt
 			if [ "$(diff data/$project-running.txt data/$project-current.txt)" != "" ]; then
-				echo "changes detected, redeploying '$project'"
+				echo "changes detected for project '$project'"
 				break
 			fi
 		done
