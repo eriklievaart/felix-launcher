@@ -2,6 +2,14 @@
 
 cd ~/Applications/@project@
 
+shutdown() {
+	echo "shutting down $pid"
+	if [ "$pid" != "" -a "$pid" -gt 1000 ]; then
+		kill -9 $pid
+	fi
+	exit 0
+}
+
 hot() {
 	project="$1"
 	[ -d data ] || mkdir data
@@ -37,6 +45,7 @@ hot() {
 if [ "$1" = "--hot" ]; then
 	echo "hot redeploy enabled"
 	shift
+	trap 'shutdown' INT
 	hot "$@"
 else
 	java -client -classpath .:@project@.jar:lib/* @jvm.opts@ @main.class@ "$@"
