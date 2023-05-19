@@ -115,11 +115,9 @@ public class Launcher {
 
 	private Hashtable<String, String> defaultProperties() {
 		Hashtable<String, String> properties = new Hashtable<>();
-		properties.put("org.osgi.framework.storage.clean", "onFirstInit");
-		properties.put("org.osgi.service.http.port", "8000");
-		properties.put("felix.log.level", "3");
+		properties.put("felix.log.level", "4");
 		properties.put("felix.cache.rootdir", project.getAbsolutePath());
-		properties.put("org.apache.felix.http.debug", "true");
+		properties.put("org.osgi.framework.storage.clean", "onFirstInit");
 		return properties;
 	}
 

@@ -2,6 +2,10 @@
 
 cd ~/Applications/@project@
 
+snapshot() {
+	ls -lR ~/Applications/$project > data/$project-$1.txt
+}
+
 shutdown() {
 	echo "shutting down $pid"
 	if [ "$pid" != "" -a "$pid" -gt 1000 ]; then
@@ -16,7 +20,7 @@ hot() {
 
 	while true
 	do
-		ls -l ~/Applications/$project/bundle > data/$project-running.txt
+		snapshot running
 		echo "redeploying"
 		java -client -classpath .:@project@.jar:lib/* @jvm.opts@ @main.class@ "$@" &
 		pid=$!
@@ -24,7 +28,7 @@ hot() {
 		while true
 		do
 			sleep 0.1
-			ls -l ~/Applications/$project/bundle > data/$project-current.txt
+			snapshot current
 			if [ "$(diff data/$project-running.txt data/$project-current.txt)" != "" ]; then
 				echo "changes detected for project '$project'"
 				break
