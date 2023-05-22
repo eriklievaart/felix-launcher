@@ -3,7 +3,7 @@
 cd ~/Applications/@project@
 
 snapshot() {
-	ls -lR ~/Applications/$project > data/$project-$1.txt
+	ls -l ~/Applications/$project ~/Applications/$project/bundle > data/$project-$1.txt
 }
 
 shutdown() {
