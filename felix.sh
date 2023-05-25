@@ -1,9 +1,12 @@
 #!/bin/dash
 
-cd ~/Applications/@project@
+die() {
+	echo >&2 "$@"
+	exit 1
+}
 
 snapshot() {
-	ls -l ~/Applications/$project ~/Applications/$project/bundle > data/$project-$1.txt
+	ls -l "$project_home" "$project_home/bundle" > data/$project-$1.txt
 }
 
 shutdown() {
@@ -16,6 +19,8 @@ shutdown() {
 
 hot() {
 	project="$1"
+	project_home=~/Applications/$project
+	[ -d "$project_home" ] || die "project does not exist: $project"
 	[ -d data ] || mkdir data
 
 	while true
@@ -47,12 +52,17 @@ hot() {
 	done
 }
 
+cd ~/Applications/@project@
+
 if [ "$1" = "--hot" ]; then
-	echo "hot redeploy enabled"
+	echo "\nfelix-launcher: hot redeploy enabled\n"
 	shift
 	trap 'shutdown' INT
 	hot "$@"
+elif [ "$1" = "--kill" ]; then
+	pkill -f 'felix-launcher.jar'
 else
+	echo "\nfelix-launcher: running project '$1' without redeploy\n"
 	java -client -classpath .:@project@.jar:lib/* @jvm.opts@ @main.class@ "$@"
 fi
 
