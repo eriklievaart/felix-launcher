@@ -37,12 +37,10 @@ public class Launcher {
 	}
 
 	private File findConfigFile() {
-		File file = new File(project, "osgi.properties");
-		if (file.exists()) {
-			return file;
-		} else {
-			return new File(project, "dev-osgi.properties");
-		}
+		File prod = new File(project, "osgi.properties");
+		File dev = new File(project, "dev-osgi.properties");
+
+		return dev.exists() && !prod.exists() ? dev : prod;
 	}
 
 	public void start() throws Exception {
