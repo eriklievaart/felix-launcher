@@ -5,10 +5,6 @@ die() {
 	exit 1
 }
 
-snapshot() {
-	ls -l "$project_home" "$project_home/bundle" > data/$project-$1.txt
-}
-
 shutdown() {
 	echo "shutting down $pid"
 	if [ "$pid" != "" -a "$pid" -gt 1000 ]; then
@@ -25,34 +21,28 @@ hot() {
 
 	while true
 	do
-		snapshot running
 		echo "redeploying"
-		java -client -classpath .:@project@.jar:lib/* @jvm.opts@ @main.class@ "$@" &
+		java -client -classpath .:felix-launcher.jar:lib/*  com.eriklievaart.felix.boot.Main "$@" &
 		pid=$!
+		echo "pid=$pid"
 
-		while true
-		do
-			sleep 0.1
-			snapshot current
-			if [ "$(diff data/$project-running.txt data/$project-current.txt)" != "" ]; then
-				echo "changes detected for project '$project'"
-				break
-			fi
-		done
+		inotifywait -e create,modify "$project_home" "$project_home/bundle/"
+		echo "application changes detected!"
+		sleep 0.01
 
 		echo "stopping process with pid $pid"
 		kill $pid
 		for i in $(seq 40)
 		do
-			[ -d "/proc/pid" ] || break
+			[ ! -d "/proc/$pid" ] && break
 			sleep 0.1
 		done
-		[ -d "/proc/pid" ] && pkill -9 $pid
+		[ -d "/proc/$pid" ] && pkill -9 $pid
 
 	done
 }
 
-cd ~/Applications/@project@
+cd ~/Applications/felix-launcher
 
 if [ "$1" = "--hot" ]; then
 	echo "\nfelix-launcher: hot redeploy enabled\n"
@@ -63,6 +53,6 @@ elif [ "$1" = "--kill" ]; then
 	pkill -f 'felix-launcher.jar'
 else
 	echo "\nfelix-launcher: running project '$1' without redeploy\n"
-	java -client -classpath .:@project@.jar:lib/* @jvm.opts@ @main.class@ "$@"
+	java -client -classpath .:felix-launcher.jar:lib/*  com.eriklievaart.felix.boot.Main "$@"
 fi
 
