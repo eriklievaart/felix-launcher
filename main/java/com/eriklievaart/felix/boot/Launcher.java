@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -181,7 +182,7 @@ public class Launcher {
 
 	private FrameworkFactory getFrameworkFactory() throws Exception {
 		String resource = "META-INF/services/org.osgi.framework.launch.FrameworkFactory";
-		java.net.URL url = Main.class.getClassLoader().getResource(resource);
+		URL url = Main.class.getClassLoader().getResource(resource);
 		if (url != null) {
 			try (BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()))) {
 				for (String s = br.readLine(); s != null; s = br.readLine()) {
